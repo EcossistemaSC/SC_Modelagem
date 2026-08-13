@@ -83,12 +83,21 @@ graph TD
 - [Modelo de Medição e Faturamento](../SC%20Billing/Modelo%20de%20Medição%20e%20Faturamento.md)
 - [Contratos e Fluxos do SC Billing](../SC%20Billing/Contratos%20e%20Fluxos%20do%20SC%20Billing.md)
 
+## Skills do repositório
+
+- [`sc-cp`](../.agents/skills/sc-cp/SKILL.md) — tenants, contratos, catálogo, manifesto e RBAC.
+- [`sc-sso`](../.agents/skills/sc-sso/SKILL.md) — identidade, autenticação, OAuth2/OIDC, MFA e tokens.
+- [`sc-ag`](../.agents/skills/sc-ag/SKILL.md) — proxy, cookies, CORS, rate limit, cache e resiliência.
+- [`sc-sign`](../.agents/skills/sc-sign/SKILL.md) — documentos, assinaturas, evidências e verificação.
+- [`sc-wpp`](../.agents/skills/sc-wpp/SKILL.md) — WhatsApp Cloud API, consentimento, filas e webhooks.
+- [`sc-billing`](../.agents/skills/sc-billing/SKILL.md) — medição, preços, fechamento, cobrança e reconciliação.
+
 ## Histórico preservado
 
-- [Plano de Ação original](../Plano%20de%20Ação%20-%20Ecossistema%20Software%20Center%20(SC).md)
-- [Plano de Ação V2](../Plano%20de%20Ação%20V2%20-%20Ecossistema%20Software%20Center%20(SC).md)
-- [Plano de Ação V3](../Plano%20de%20Ação%20V3%20-%20Ecossistema%20Software%20Center%20(SC).md)
-- [Plano de Ação V4](../Plano%20de%20Ação%20V4%20-%20Ecossistema%20SoftwareCenter%20(SC).md)
+- [Plano de Ação original](../Plano%20de%20Ação%20-%20Ecossistema%20Software%20Center%20%28SC%29.md)
+- [Plano de Ação V2](../Plano%20de%20Ação%20V2%20-%20Ecossistema%20Software%20Center%20%28SC%29.md)
+- [Plano de Ação V3](../Plano%20de%20Ação%20V3%20-%20Ecossistema%20Software%20Center%20%28SC%29.md)
+- [Plano de Ação V4](../Plano%20de%20Ação%20V4%20-%20Ecossistema%20SoftwareCenter%20%28SC%29.md)
 
 ## Glossário essencial
 
