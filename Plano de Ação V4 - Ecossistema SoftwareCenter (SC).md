@@ -2,23 +2,23 @@
 
 | Campo | Valor |
 | --- | --- |
-| **Documento** | Plano de Ação V3 — Ecossistema Software Center (SC) |
+| **Documento** | Plano de Ação V4 — Ecossistema Software Center (SC) |
 | **Versão** | 3.0 |
 | **Status** | Aprovado para implementação (Fase 1 iniciável) |
 | **Autor** | Equipe de Arquitetura |
-| **Escopo** | SC (Control Plane), SC SSO (Identity Provider), SC Auth Gateway (Middleware), Aplicações Clientes e Motores Nativos |
-| **Documentos base** | Plano de Ação V2; Contratos de integração da Software Center (skill `sc`) |
+| **Escopo** | SC CP, SC SSO (Identity Provider), SC Auth Gateway (Middleware), Aplicações Clientes e Motores Nativos |
+| **Documentos base** | Plano de Ação V3; Contratos de integração da Software Center (skill `sc`) |
 
 ---
 
 ## Sumário executivo
 
-A **V3** revisa a arquitetura da V2 incorporando, integralmente, as correções pontuais levantadas na revisão crítica. O ecossistema evolui de um planio conceitual para um **documento executável**: contém princípios, diagramas, fluxos, casos de uso, mapeamento de requisitos rastreáveis (`REQ-xxx`), contratos de API e matrizes de risco.
+A **V4** revisa a arquitetura da V3 incorporando, integralmente, as correções pontuais levantadas na revisão crítica. O ecossistema evolui de um planio conceitual para um **documento executável**: contém princípios, diagramas, fluxos, casos de uso, mapeamento de requisitos rastreáveis (`REQ-xxx`), contratos de API e matrizes de risco.
 
 As mudanças estruturais desta versão:
 
 1. **SC Sign** passa a ser documentada como **Assinatura Eletrônica Qualificada** — força probatória com auditoria completa e evidência forense, com caminho de elevação opcional para assinatura digital ICP-Brasil.
-2. **SC Notify** substitui o uso de `whatsapp-web.js`/`Baileys` pela **WhatsApp Business Platform — Cloud API oficial (Meta)**, com custo por conversa, templates aprovados e fallback (e-mail/SMS/push).
+2. **SC Wpp** substitui o uso de `whatsapp-web.js`/`Baileys` pela **WhatsApp Business Platform — Cloud API oficial (Meta)**, com custo por conversa, templates aprovados e fallback (e-mail/SMS/push).
 3. **SC Auth Gateway** ganha **alta disponibilidade** (múltiplas réplicas), **circuit breaker** e **modo degradado com fallback do Redis**.
 4. A comunicação S2S deixa de usar **API Key estática** e passa a usar **mTLS + OAuth2 Client Credentials**.
 5. **Cookie de sessão** agora define escopo de domínio e **proteção CSRF** explícita.
@@ -48,12 +48,12 @@ Construir o **control plane de software** da organização: identidade central, 
 
 ---
 
-## 2. Mudanças Críticas — V2 → V3
+## 2. Mudanças Críticas — V3 → V4
 
 | # | Tema V2 | Problema identificado | Correção implementada na V3 | Seção |
 | --- | --- | --- | --- | --- |
 | C-01 | SC Sign "validade jurídica (MP 2.200-2)" | MP 2.200-2 refere-se a assinatura **digital** ICP-Brasil; hash SHA-256 + metadados dão força probatória, não plena | Assinatura **Eletrônica Qualificada**, com log assinado, timestamp RFC 3161 (TSA), e validação forense; elevação opcional ICP-Brasil | §14.1 |
-| C-02 | SC Whats com `whatsapp-web.js`/`Baileys` | Violam Termos do WhatsApp; risco de banimento; sem garantia de entrega | **WhatsApp Cloud API oficial (Meta)**, templates aprovados, custo por conversa, fallback e-mail/SMS | §14.2 |
+| C-02 | SC Wpp com `whatsapp-web.js`/`Baileys` | Violam Termos do WhatsApp; risco de banimento; sem garantia de entrega | **WhatsApp Cloud API oficial (Meta)**, templates aprovados, custo por conversa, fallback e-mail/SMS | §14.2 |
 | C-03 | Cookie JWT sem CSRF/escopo | Cookie é vetor de CSRF; escopo de domínio indefinido | `SameSite=Lax/Strict`, flag de escopo por domínio e **double-submit token CSRF** | §5.2 |
 | C-04 | Single SC AG | SPOF; derruba todas as apps juntas | Replicação ≥2 em AZ distintas, health checks, **circuit breaker** e modo degradado | §5.3 |
 | C-05 | Redis sem fallback | Se o Redis cair, CORS/rate-limit quebram | Cache local (in-memory) como reserve, TTL curto, versões de chave e grace period | §5.4 |
@@ -69,10 +69,9 @@ Construir o **control plane de software** da organização: identidade central, 
 
 | Componente | Papel | Tecnologia sugerida | Dono |
 | --- | --- | --- | --- |
-| **SC** | Control Plane: tenants, contratos, RBAC, catálogo, motores | Java 21 + Spring Boot 3 + JPA + Flyway | Equipe SC |
+| **SC CP** | Control Panel: tenants, contratos, RBAC, catálogo, motores | Java 21 + Spring Boot 3 + JPA + Flyway | Equipe SC |
 | **SC SSO** | Identity Provider (OIDC Authorization Server) | Spring Authorization Server + PostgreSQL | Equipe SC |
 | **SC AG** | Auth Gateway: proxy reverso, cookies, CORS dinâmico, rate-limit, mTLS | Spring Cloud Gateway (replicado) | Equipe SC |
-| **SC Portal (painel)** | Admin do tenant: gestão de membros, RBAC, liberações, monitoramento | Vue 3 + Vuetify + Pinia | Equipe SC |
 | **Aplicações Clientes** | Produtos de terceiros integrados via BFF + cookie | Agnóstica (Vue/PWA/React/mobile) | Devs terceiros |
 | **Motores** | SC Sign, SC Notify, Gateway de Pagamento, NFS-e | Node/Java + API externa | Equipe SC + parceiros |
 | **Infraestrutura** | Proxy CDN, balanceamento, Redis, bancos, WebSocket | AWS CloudFront + ALB + EKS + ElastiCache + RDS | DevOps |
@@ -116,13 +115,11 @@ graph TD
 
 ### 3.2 Componentes Core da Arquitetura
 
-- SC (Control Plane): É o núcleo central da plataforma, atuando como o plano de controle de software da organização. Este componente gerencia todas as regras de negócio, a segregação de tenants (multi-tenancy), os contratos de uso, o catálogo de aplicações e as permissões de acesso através de um motor RBAC dinâmico.
+- SC CP: É o núcleo central da plataforma, atuando como o plano de controle de software da organização. Este componente gerencia todas as regras de negócio, a segregação de tenants (multi-tenancy), os contratos de uso, o catálogo de aplicações e as permissões de acesso através de um motor RBAC dinâmico. A interface visual administrativa de cada tenant. É o painel onde os administradores realizam a gestão de membros, controlam atribuições de acesso (RBAC), aprovam liberações e visualizam métricas e logs de telemetria em tempo real.
 
 - SC SSO (Identity Provider): É o provedor de identidade centralizado, operando como um Authorization Server baseado no padrão OIDC. Ele desacopla a identidade do negócio, sendo o único responsável por armazenar dados de usuários, orquestrar logins, aplicar duplo fator de autenticação (MFA), gerenciar recuperação de senhas e emitir tokens de sessão.
 
 - SC AG (SC Auth Gateway): Atua como o middleware de segurança e proxy reverso de todo o ecossistema. Sendo o ponto de entrada único, ele abstrai a complexidade para as aplicações clientes, validando cookies (com proteção CSRF embutida), gerenciando CORS dinâmico e rate-limit, além de garantir a autenticação S2S (serviço a serviço) via mTLS e aplicar mecanismos de circuit breaker para alta disponibilidade.
-
-- SC Portal: A interface visual administrativa de cada tenant. É o painel onde os administradores realizam a gestão de membros, controlam atribuições de acesso (RBAC), aprovam liberações e visualizam métricas e logs de telemetria em tempo real.
 
 - SC Billing (Motor de Faturamento): É o subsistema interno do Control Plane encarregado da bilhetagem (metering) e cobrança. Ele consolida o consumo de motores nativos com o valor fixo das licenças, congelando os preços unitários no momento do uso, e gera uma fatura unificada no modelo pós-pago.
 
