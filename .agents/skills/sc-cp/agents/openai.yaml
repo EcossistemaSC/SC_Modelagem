@@ -1,0 +1,4 @@
+interface:
+  display_name: "SC CP"
+  short_description: "Orienta mudancas no Control Plane da SC"
+  default_prompt: "Use $sc-cp para analisar uma mudanca no Control Plane da Software Center."
