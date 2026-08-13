@@ -1,0 +1,4 @@
+interface:
+  display_name: "SC Wpp"
+  short_description: "Orienta notificacoes WhatsApp da SC"
+  default_prompt: "Use $sc-wpp para analisar uma mudanca de notificacao WhatsApp na Software Center."
