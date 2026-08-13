@@ -1,0 +1,4 @@
+interface:
+  display_name: "SC Billing"
+  short_description: "Orienta medicao e faturamento da SC"
+  default_prompt: "Use $sc-billing para analisar uma mudanca de medicao ou faturamento na Software Center."
