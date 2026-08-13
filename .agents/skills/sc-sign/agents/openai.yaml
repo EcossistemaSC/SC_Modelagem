@@ -1,0 +1,4 @@
+interface:
+  display_name: "SC Sign"
+  short_description: "Orienta assinaturas e evidencias da SC"
+  default_prompt: "Use $sc-sign para analisar uma mudanca de assinatura ou evidencia na Software Center."
