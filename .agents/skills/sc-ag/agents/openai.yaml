@@ -1,0 +1,4 @@
+interface:
+  display_name: "SC AG"
+  short_description: "Orienta o gateway de seguranca da SC"
+  default_prompt: "Use $sc-ag para analisar uma mudanca no gateway da Software Center."
