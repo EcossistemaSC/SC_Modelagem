@@ -1,0 +1,4 @@
+interface:
+  display_name: "SC SSO"
+  short_description: "Orienta identidade e autenticacao da SC"
+  default_prompt: "Use $sc-sso para analisar identidade ou autenticacao da Software Center."
